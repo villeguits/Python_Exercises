@@ -1,2 +1,2 @@
 # Python_Exercises
- Different python exercises as a studen and as a teacher
+ Different python exercises as a student and as a teacher
