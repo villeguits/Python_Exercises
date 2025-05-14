@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "51", "label": "51", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "476", "label": "476", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "409", "label": "409", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "443", "label": "443", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "323", "label": "323", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "347", "label": "347", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "262", "label": "262", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "59", "label": "59", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "181", "label": "181", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "477", "label": "477", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "482", "label": "482", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "37", "label": "37", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "204", "label": "204", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "460", "label": "460", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "26", "label": "26", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "22", "label": "22", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "55", "label": "55", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "29", "label": "29", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "284", "label": "284", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "289", "label": "289", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "353", "label": "353", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "415", "label": "415", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "242", "label": "242", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "164", "label": "164", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "416", "label": "416", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4", "label": "4", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "49", "label": "49", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "41", "label": "41", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "137", "label": "137", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "176", "label": "176", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "92", "label": "92", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "47", "label": "47", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "195", "label": "195", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "318", "label": "318", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "304", "label": "304", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "249", "label": "249", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "394", "label": "394", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "496", "label": "496", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "326", "label": "326", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "352", "label": "352", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "192", "label": "192", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "288", "label": "288", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "44", "label": "44", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "226", "label": "226", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "463", "label": "463", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "155", "label": "155", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "360", "label": "360", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "223", "label": "223", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "397", "label": "397", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "84", "label": "84", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "45", "label": "45", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "53", "label": "53", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "42", "label": "42", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "332", "label": "332", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "170", "label": "170", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "461", "label": "461", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "81", "label": "81", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "356", "label": "356", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "23", "label": "23", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "13", "label": "13", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "17", "label": "17", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "75", "label": "75", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "130", "label": "130", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "462", "label": "462", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "62", "label": "62", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "9", "label": "9", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "395", "label": "395", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "52", "label": "52", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "48", "label": "48", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "450", "label": "450", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "467", "label": "467", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "319", "label": "319", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "60", "label": "60", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "99", "label": "99", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "61", "label": "61", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "186", "label": "186", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "169", "label": "169", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "82", "label": "82", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "448", "label": "448", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "50", "label": "50", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "40", "label": "40", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "251", "label": "251", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "115", "label": "115", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7", "label": "7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "233", "label": "233", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "412", "label": "412", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "120", "label": "120", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "436", "label": "436", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "157", "label": "157", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "64", "label": "64", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "57", "label": "57", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "367", "label": "367", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "465", "label": "465", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "25", "label": "25", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "124", "label": "124", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "168", "label": "168", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "269", "label": "269", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "133", "label": "133", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "426", "label": "426", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "158", "label": "158", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "224", "label": "224", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "354", "label": "354", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "414", "label": "414", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "219", "label": "219", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "430", "label": "430", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "285", "label": "285", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "489", "label": "489", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "261", "label": "261", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "58", "label": "58", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "43", "label": "43", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "472", "label": "472", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "12", "label": "12", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "188", "label": "188", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "401", "label": "401", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "372", "label": "372", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "38", "label": "38", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "328", "label": "328", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "454", "label": "454", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "345", "label": "345", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "191", "label": "191", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "39", "label": "39", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "365", "label": "365", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "222", "label": "222", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "278", "label": "278", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "324", "label": "324", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "193", "label": "193", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "134", "label": "134", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "471", "label": "471", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "459", "label": "459", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "344", "label": "344", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "271", "label": "271", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "34", "label": "34", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "389", "label": "389", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "484", "label": "484", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "374", "label": "374", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "70", "label": "70", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "90", "label": "90", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "114", "label": "114", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "147", "label": "147", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "306", "label": "306", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "54", "label": "54", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "402", "label": "402", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "113", "label": "113", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "270", "label": "270", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "79", "label": "79", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "474", "label": "474", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "63", "label": "63", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "316", "label": "316", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "381", "label": "381", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "56", "label": "56", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "453", "label": "453", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "336", "label": "336", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "422", "label": "422", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "227", "label": "227", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "33", "label": "33", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "301", "label": "301", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "216", "label": "216", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "163", "label": "163", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "27", "label": "27", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "46", "label": "46", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "349", "label": "349", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "237", "label": "237", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "235", "label": "235", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "435", "label": "435", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "160", "label": "160", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "363", "label": "363", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "196", "label": "196", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "175", "label": "175", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "406", "label": "406", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "65", "label": "65", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "295", "label": "295", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "74", "label": "74", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "314", "label": "314", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "335", "label": "335", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "404", "label": "404", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "499", "label": "499", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "31", "label": "31", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "258", "label": "258", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "206", "label": "206", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "77", "label": "77", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "455", "label": "455", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "210", "label": "210", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "375", "label": "375", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "68", "label": "68", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "437", "label": "437", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"color": "grey", "from": "51", "title": "2025365.0 \n ID Transaccion: 0", "to": "476", "width": 1.2613007019793698}, {"color": "grey", "from": "51", "title": "2402676.0 \n ID Transaccion: 4", "to": "409", "width": 1.2761390892059346}, {"color": "grey", "from": "51", "title": "2025884.0 \n ID Transaccion: 14", "to": "443", "width": 1.261322966120829}, {"color": "grey", "from": "51", "title": "4157374.0 \n ID Transaccion: 43", "to": "323", "width": 1.3237638462097832}, {"color": "red", "from": "51", "title": "3676945.0 \n ID Transaccion: 48", "to": "347", "width": 1.3130974510343774}, {"color": "grey", "from": "51", "title": "3050160.0 \n ID Transaccion: 52", "to": "262", "width": 1.2968645441037499}, {"color": "grey", "from": "51", "title": "658468.0 \n ID Transaccion: 60", "to": "59", "width": 1.1637071021880059}, {"color": "grey", "from": "51", "title": "2141602.0 \n ID Transaccion: 67", "to": "181", "width": 1.2661477921622573}, {"color": "grey", "from": "51", "title": "41608.0 \n ID Transaccion: 96", "to": "477", "width": 0.9238371016149566}, {"color": "grey", "from": "51", "title": "3238583.0 \n ID Transaccion: 123", "to": "482", "width": 1.302071020307018}, {"color": "grey", "from": "51", "title": "702884.0 \n ID Transaccion: 129", "to": "37", "width": 1.1693768792306645}, {"color": "grey", "from": "51", "title": "519229.0 \n ID Transaccion: 156", "to": "204", "width": 1.1430719270677379}, {"color": "grey", "from": "51", "title": "374182.0 \n ID Transaccion: 162", "to": "460", "width": 1.1146167322694231}, {"color": "grey", "from": "51", "title": "1106817.0 \n ID Transaccion: 175", "to": "26", "width": 1.2088152474108496}, {"color": "grey", "from": "51", "title": "1021659.0 \n ID Transaccion: 197", "to": "22", "width": 1.201861319600779}, {"color": "grey", "from": "55", "title": "3303254.0 \n ID Transaccion: 1", "to": "29", "width": 1.303788418828158}, {"color": "grey", "from": "55", "title": "620078.0 \n ID Transaccion: 31", "to": "284", "width": 1.1584893448900855}, {"color": "grey", "from": "55", "title": "1414938.0 \n ID Transaccion: 51", "to": "289", "width": 1.2301475290197839}, {"color": "grey", "from": "55", "title": "846076.0 \n ID Transaccion: 58", "to": "353", "width": 1.1854819550957323}, {"color": "grey", "from": "55", "title": "662421.0 \n ID Transaccion: 90", "to": "415", "width": 1.1642269491217632}, {"color": "grey", "from": "55", "title": "910616.0 \n ID Transaccion: 136", "to": "242", "width": 1.191867129579928}, {"color": "grey", "from": "55", "title": "898742.0 \n ID Transaccion: 157", "to": "164", "width": 1.190727067617749}, {"color": "grey", "from": "55", "title": "267453.0 \n ID Transaccion: 170", "to": "416", "width": 1.0854499630914909}, {"color": "grey", "from": "55", "title": "291058.0 \n ID Transaccion: 180", "to": "4", "width": 1.092796248675628}, {"color": "grey", "from": "29", "title": "1951831.0 \n ID Transaccion: 164", "to": "49", "width": 1.2580885055945428}, {"color": "grey", "from": "41", "title": "31803.0 \n ID Transaccion: 2", "to": "137", "width": 0.9004955325290028}, {"color": "grey", "from": "41", "title": "604575.0 \n ID Transaccion: 23", "to": "176", "width": 1.1562902311235534}, {"color": "red", "from": "41", "title": "108468.0 \n ID Transaccion: 57", "to": "92", "width": 1.0070611357366477}, {"color": "grey", "from": "47", "title": "1314048.0 \n ID Transaccion: 3", "to": "195", "width": 1.2237223364808754}, {"color": "red", "from": "47", "title": "1054173.0 \n ID Transaccion: 39", "to": "318", "width": 1.2045824526427278}, {"color": "grey", "from": "47", "title": "236165.0 \n ID Transaccion: 61", "to": "304", "width": 1.074643451861773}, {"color": "grey", "from": "47", "title": "132640.0 \n ID Transaccion: 79", "to": "249", "width": 1.024535769096562}, {"color": "grey", "from": "47", "title": "355013.0 \n ID Transaccion: 84", "to": "394", "width": 1.1100491707598412}, {"color": "grey", "from": "47", "title": "679790.0 \n ID Transaccion: 115", "to": "496", "width": 1.1664751425899107}, {"color": "grey", "from": "47", "title": "85042.0 \n ID Transaccion: 116", "to": "326", "width": 0.9859279337568635}, {"color": "grey", "from": "47", "title": "503379.0 \n ID Transaccion: 134", "to": "352", "width": 1.1403791402282812}, {"color": "red", "from": "47", "title": "4845119.0 \n ID Transaccion: 139", "to": "192", "width": 1.3370609020965154}, {"color": "red", "from": "47", "title": "157539.0 \n ID Transaccion: 176", "to": "482", "width": 1.0394782106353102}, {"color": "grey", "from": "47", "title": "34786.0 \n ID Transaccion: 192", "to": "288", "width": 0.9082829917947335}, {"color": "grey", "from": "44", "title": "1947432.0 \n ID Transaccion: 5", "to": "226", "width": 1.257892502820907}, {"color": "red", "from": "44", "title": "783581.0 \n ID Transaccion: 18", "to": "463", "width": 1.178816938959602}, {"color": "grey", "from": "44", "title": "956441.0 \n ID Transaccion: 103", "to": "155", "width": 1.1961317399642644}, {"color": "grey", "from": "44", "title": "2054419.0 \n ID Transaccion: 107", "to": "360", "width": 1.2625378660321744}, {"color": "red", "from": "44", "title": "568552.0 \n ID Transaccion: 108", "to": "223", "width": 1.1509542576236682}, {"color": "grey", "from": "44", "title": "930233.0 \n ID Transaccion: 183", "to": "397", "width": 1.1937184294035386}, {"color": "grey", "from": "44", "title": "53081.0 \n ID Transaccion: 196", "to": "84", "width": 0.9449895142916468}, {"color": "grey", "from": "226", "title": "1255000.0 \n ID Transaccion: 15", "to": "45", "width": 1.2197287872860887}, {"color": "grey", "from": "226", "title": "886451.0 \n ID Transaccion: 178", "to": "53", "width": 1.1895310758391247}, {"color": "grey", "from": "42", "title": "3338799.0 \n ID Transaccion: 6", "to": "332", "width": 1.3047180922177093}, {"color": "grey", "from": "42", "title": "1427508.0 \n ID Transaccion: 7", "to": "170", "width": 1.2309157969231}, {"color": "grey", "from": "42", "title": "205130.0 \n ID Transaccion: 30", "to": "461", "width": 1.0624064121770336}, {"color": "grey", "from": "42", "title": "934726.0 \n ID Transaccion: 34", "to": "81", "width": 1.194136933172426}, {"color": "grey", "from": "42", "title": "1740196.0 \n ID Transaccion: 69", "to": "356", "width": 1.2481196970290611}, {"color": "red", "from": "42", "title": "958688.0 \n ID Transaccion: 82", "to": "23", "width": 1.1963355850152482}, {"color": "grey", "from": "42", "title": "1050663.0 \n ID Transaccion: 101", "to": "13", "width": 1.2042927711101001}, {"color": "grey", "from": "42", "title": "1363669.0 \n ID Transaccion: 106", "to": "17", "width": 1.2269418272768968}, {"color": "grey", "from": "42", "title": "816763.0 \n ID Transaccion: 190", "to": "75", "width": 1.1824192913167755}, {"color": "grey", "from": "42", "title": "4319464.0 \n ID Transaccion: 193", "to": "130", "width": 1.3270859836272586}, {"color": "grey", "from": "42", "title": "262835.0 \n ID Transaccion: 195", "to": "462", "width": 1.0839368248306673}, {"color": "grey", "from": "170", "title": "86112.0 \n ID Transaccion: 68", "to": "62", "width": 0.9870137448316507}, {"color": "grey", "from": "45", "title": "583932.0 \n ID Transaccion: 8", "to": "9", "width": 1.1532725854954735}, {"color": "grey", "from": "45", "title": "223593.0 \n ID Transaccion: 13", "to": "395", "width": 1.0698918665174553}, {"color": "grey", "from": "45", "title": "75172.0 \n ID Transaccion: 65", "to": "52", "width": 0.9752126260056695}, {"color": "grey", "from": "45", "title": "1109831.0 \n ID Transaccion: 77", "to": "48", "width": 1.2090514769487766}, {"color": "grey", "from": "45", "title": "1290354.0 \n ID Transaccion: 99", "to": "450", "width": 1.2221418208496724}, {"color": "grey", "from": "45", "title": "516276.0 \n ID Transaccion: 117", "to": "467", "width": 1.1425765643502237}, {"color": "red", "from": "45", "title": "537696.0 \n ID Transaccion: 124", "to": "319", "width": 1.1461074724615794}, {"color": "grey", "from": "45", "title": "990920.0 \n ID Transaccion: 126", "to": "60", "width": 1.1992077629758207}, {"color": "grey", "from": "45", "title": "1807877.0 \n ID Transaccion: 144", "to": "394", "width": 1.25143382613902}, {"color": "grey", "from": "45", "title": "477002.0 \n ID Transaccion: 182", "to": "99", "width": 1.1357041862745547}, {"color": "red", "from": "61", "title": "373897.0 \n ID Transaccion: 9", "to": "463", "width": 1.1145505499522745}, {"color": "grey", "from": "61", "title": "567831.0 \n ID Transaccion: 42", "to": "186", "width": 1.1508440114358631}, {"color": "grey", "from": "61", "title": "424673.0 \n ID Transaccion: 62", "to": "169", "width": 1.1256111878692132}, {"color": "grey", "from": "61", "title": "1081225.0 \n ID Transaccion: 91", "to": "82", "width": 1.2067832710305169}, {"color": "grey", "from": "61", "title": "21082.0 \n ID Transaccion: 111", "to": "448", "width": 0.8647856873385837}, {"color": "grey", "from": "50", "title": "386755.0 \n ID Transaccion: 10", "to": "40", "width": 1.1174874890425337}, {"color": "grey", "from": "50", "title": "95591.0 \n ID Transaccion: 21", "to": "251", "width": 0.9960844538455401}, {"color": "grey", "from": "50", "title": "892242.0 \n ID Transaccion: 41", "to": "115", "width": 1.19009663766991}, {"color": "grey", "from": "50", "title": "1181539.0 \n ID Transaccion: 74", "to": "7", "width": 1.214489719597457}, {"color": "grey", "from": "50", "title": "1835413.0 \n ID Transaccion: 121", "to": "233", "width": 1.2527468083899107}, {"color": "grey", "from": "50", "title": "1872397.0 \n ID Transaccion: 125", "to": "412", "width": 1.25447962219679}, {"color": "grey", "from": "50", "title": "1001142.0 \n ID Transaccion: 149", "to": "120", "width": 1.2000992456594877}, {"color": "grey", "from": "50", "title": "100109.0 \n ID Transaccion: 160", "to": "436", "width": 1.0000957838905538}, {"color": "grey", "from": "50", "title": "1996691.0 \n ID Transaccion: 189", "to": "157", "width": 1.2600622242605455}, {"color": "grey", "from": "40", "title": "624739.0 \n ID Transaccion: 45", "to": "64", "width": 1.159139796852937}, {"color": "grey", "from": "40", "title": "503428.0 \n ID Transaccion: 47", "to": "57", "width": 1.140387679041957}, {"color": "grey", "from": "40", "title": "505274.0 \n ID Transaccion: 168", "to": "367", "width": 1.1407055661079244}, {"color": "grey", "from": "40", "title": "445117.0 \n ID Transaccion: 181", "to": "465", "width": 1.1296950471938003}, {"color": "grey", "from": "48", "title": "1288887.0 \n ID Transaccion: 11", "to": "25", "width": 1.2220430367021602}, {"color": "grey", "from": "48", "title": "637774.0 \n ID Transaccion: 17", "to": "124", "width": 1.1609334839669119}, {"color": "grey", "from": "48", "title": "348378.0 \n ID Transaccion: 27", "to": "37", "width": 1.1084103917420927}, {"color": "grey", "from": "48", "title": "157733.0 \n ID Transaccion: 56", "to": "168", "width": 1.0395849758880356}, {"color": "grey", "from": "48", "title": "1495238.0 \n ID Transaccion: 63", "to": "269", "width": 1.2349421169311152}, {"color": "grey", "from": "48", "title": "1722835.0 \n ID Transaccion: 75", "to": "133", "width": 1.2472487713325675}, {"color": "grey", "from": "48", "title": "949186.0 \n ID Transaccion: 83", "to": "426", "width": 1.1954703879073798}, {"color": "grey", "from": "48", "title": "1529808.0 \n ID Transaccion: 88", "to": "158", "width": 1.236927435002269}, {"color": "grey", "from": "48", "title": "899627.0 \n ID Transaccion: 100", "to": "224", "width": 1.1908125896602726}, {"color": "grey", "from": "48", "title": "44644.0 \n ID Transaccion: 109", "to": "354", "width": 0.9299536199423745}, {"color": "grey", "from": "48", "title": "249181.0 \n ID Transaccion: 118", "to": "414", "width": 1.0793033366294145}, {"color": "grey", "from": "48", "title": "1064238.0 \n ID Transaccion: 138", "to": "219", "width": 1.20540782839962}, {"color": "grey", "from": "48", "title": "596808.0 \n ID Transaccion: 177", "to": "430", "width": 1.1551670930834002}, {"color": "grey", "from": "48", "title": "2967793.0 \n ID Transaccion: 179", "to": "285", "width": 1.2944867599601484}, {"color": "grey", "from": "48", "title": "441194.0 \n ID Transaccion: 184", "to": "489", "width": 1.1289261021789654}, {"color": "grey", "from": "59", "title": "1369780.0 \n ID Transaccion: 12", "to": "261", "width": 1.227330197954982}, {"color": "grey", "from": "59", "title": "18538.0 \n ID Transaccion: 59", "to": "53", "width": 0.8536192119105065}, {"color": "grey", "from": "395", "title": "9071.0 \n ID Transaccion: 165", "to": "58", "width": 0.7915446809181607}, {"color": "grey", "from": "43", "title": "827251.0 \n ID Transaccion: 16", "to": "472", "width": 1.1835275462564765}, {"color": "grey", "from": "43", "title": "805200.0 \n ID Transaccion: 92", "to": "356", "width": 1.1811808539983213}, {"color": "grey", "from": "43", "title": "179126.0 \n ID Transaccion: 97", "to": "12", "width": 1.0506322323441875}, {"color": "grey", "from": "43", "title": "176346.0 \n ID Transaccion: 110", "to": "188", "width": 1.0492738595048043}, {"color": "grey", "from": "43", "title": "627009.0 \n ID Transaccion: 143", "to": "401", "width": 1.1594548869256909}, {"color": "grey", "from": "43", "title": "776324.0 \n ID Transaccion: 191", "to": "372", "width": 1.178008727118091}, {"color": "grey", "from": "52", "title": "173456.0 \n ID Transaccion: 19", "to": "38", "width": 1.0478382957745869}, {"color": "grey", "from": "52", "title": "227781.0 \n ID Transaccion: 20", "to": "328", "width": 1.071503822632173}, {"color": "grey", "from": "52", "title": "1593554.0 \n ID Transaccion: 26", "to": "454", "width": 1.2404734045792323}, {"color": "grey", "from": "52", "title": "764090.0 \n ID Transaccion: 66", "to": "345", "width": 1.176628964031244}, {"color": "grey", "from": "52", "title": "442858.0 \n ID Transaccion: 70", "to": "191", "width": 1.1292530167384012}, {"color": "grey", "from": "52", "title": "947415.0 \n ID Transaccion: 89", "to": "39", "width": 1.1953081496210847}, {"color": "grey", "from": "52", "title": "403938.0 \n ID Transaccion: 113", "to": "365", "width": 1.1212632028793599}, {"color": "grey", "from": "52", "title": "1459828.0 \n ID Transaccion: 128", "to": "222", "width": 1.2328604257621048}, {"color": "grey", "from": "52", "title": "721538.0 \n ID Transaccion: 131", "to": "278", "width": 1.171651980412504}, {"color": "grey", "from": "52", "title": "1574824.0 \n ID Transaccion: 137", "to": "324", "width": 1.2394464824299511}, {"color": "grey", "from": "52", "title": "1496110.0 \n ID Transaccion: 146", "to": "193", "width": 1.2349927720002545}, {"color": "grey", "from": "52", "title": "71639.0 \n ID Transaccion: 153", "to": "192", "width": 0.9710306781818115}, {"color": "grey", "from": "52", "title": "913081.0 \n ID Transaccion: 167", "to": "134", "width": 1.1921019410016023}, {"color": "grey", "from": "52", "title": "595617.0 \n ID Transaccion: 174", "to": "471", "width": 1.1549935444228938}, {"color": "grey", "from": "52", "title": "254507.0 \n ID Transaccion: 198", "to": "459", "width": 1.0811402008918187}, {"color": "grey", "from": "38", "title": "1059189.0 \n ID Transaccion: 112", "to": "344", "width": 1.204994755262252}, {"color": "grey", "from": "38", "title": "1522299.0 \n ID Transaccion: 186", "to": "271", "width": 1.2365000431261601}, {"color": "grey", "from": "251", "title": "866108.0 \n ID Transaccion: 158", "to": "53", "width": 1.1875145544641128}, {"color": "grey", "from": "34", "title": "166832.0 \n ID Transaccion: 22", "to": "389", "width": 1.044456282976489}, {"color": "grey", "from": "34", "title": "931883.0 \n ID Transaccion: 135", "to": "484", "width": 1.1938724132437224}, {"color": "grey", "from": "34", "title": "268915.0 \n ID Transaccion: 145", "to": "374", "width": 1.0859234572578487}, {"color": "grey", "from": "176", "title": "3426862.0 \n ID Transaccion: 29", "to": "70", "width": 1.3069793439880368}, {"color": "grey", "from": "57", "title": "755777.0 \n ID Transaccion: 24", "to": "90", "width": 1.1756788374378617}, {"color": "grey", "from": "57", "title": "912118.0 \n ID Transaccion: 33", "to": "461", "width": 1.1920102637554264}, {"color": "grey", "from": "57", "title": "284407.0 \n ID Transaccion: 35", "to": "114", "width": 1.0907884779980501}, {"color": "grey", "from": "57", "title": "175337.0 \n ID Transaccion: 38", "to": "224", "width": 1.0487749974667695}, {"color": "grey", "from": "57", "title": "1288389.0 \n ID Transaccion: 54", "to": "147", "width": 1.222009447022279}, {"color": "grey", "from": "57", "title": "718701.0 \n ID Transaccion: 151", "to": "306", "width": 1.1713098111496314}, {"color": "grey", "from": "57", "title": "583440.0 \n ID Transaccion: 172", "to": "459", "width": 1.1531993887120593}, {"color": "red", "from": "54", "title": "18023.0 \n ID Transaccion: 25", "to": "402", "width": 0.8511718814024448}, {"color": "grey", "from": "54", "title": "399012.0 \n ID Transaccion: 104", "to": "113", "width": 1.120197437411846}, {"color": "grey", "from": "54", "title": "532784.0 \n ID Transaccion: 152", "to": "270", "width": 1.145310327579978}, {"color": "grey", "from": "54", "title": "270534.0 \n ID Transaccion: 169", "to": "79", "width": 1.0864446142461273}, {"color": "grey", "from": "54", "title": "762523.0 \n ID Transaccion: 185", "to": "39", "width": 1.1764506832457327}, {"color": "grey", "from": "37", "title": "920940.0 \n ID Transaccion: 148", "to": "474", "width": 1.1928463599187065}, {"color": "red", "from": "63", "title": "2428557.0 \n ID Transaccion: 28", "to": "316", "width": 1.2770696945296574}, {"color": "grey", "from": "63", "title": "388748.0 \n ID Transaccion: 71", "to": "155", "width": 1.1179337853850275}, {"color": "grey", "from": "63", "title": "1055907.0 \n ID Transaccion: 161", "to": "381", "width": 1.2047252173538239}, {"color": "grey", "from": "461", "title": "1279730.0 \n ID Transaccion: 49", "to": "56", "width": 1.221423740166821}, {"color": "grey", "from": "58", "title": "1233.0 \n ID Transaccion: 32", "to": "453", "width": 0.6182344848108307}, {"color": "red", "from": "58", "title": "1382947.0 \n ID Transaccion: 55", "to": "336", "width": 1.2281611404573265}, {"color": "grey", "from": "58", "title": "3792747.0 \n ID Transaccion: 72", "to": "422", "width": 1.315790800877752}, {"color": "grey", "from": "58", "title": "783730.0 \n ID Transaccion: 130", "to": "477", "width": 1.1788333723512276}, {"color": "grey", "from": "58", "title": "1086549.0 \n ID Transaccion: 159", "to": "227", "width": 1.207209957493444}, {"color": "grey", "from": "58", "title": "887734.0 \n ID Transaccion: 166", "to": "33", "width": 1.1896566654995424}, {"color": "grey", "from": "58", "title": "401806.0 \n ID Transaccion: 173", "to": "53", "width": 1.1208034685249768}, {"color": "red", "from": "60", "title": "255589.0 \n ID Transaccion: 37", "to": "301", "width": 1.0815089247287577}, {"color": "grey", "from": "60", "title": "2383997.0 \n ID Transaccion: 53", "to": "216", "width": 1.2754611947942818}, {"color": "red", "from": "60", "title": "781932.0 \n ID Transaccion: 114", "to": "163", "width": 1.1786338748133032}, {"color": "red", "from": "60", "title": "198464.0 \n ID Transaccion: 199", "to": "27", "width": 1.059536640148333}, {"color": "grey", "from": "46", "title": "394415.0 \n ID Transaccion: 40", "to": "349", "width": 1.1191908138249251}, {"color": "grey", "from": "46", "title": "1140862.0 \n ID Transaccion: 46", "to": "354", "width": 1.2114467188670017}, {"color": "grey", "from": "46", "title": "1069978.0 \n ID Transaccion: 50", "to": "237", "width": 1.2058750321768876}, {"color": "grey", "from": "46", "title": "42056.0 \n ID Transaccion: 76", "to": "235", "width": 0.9247667548133812}, {"color": "grey", "from": "46", "title": "652541.0 \n ID Transaccion: 102", "to": "53", "width": 1.1629216609471682}, {"color": "grey", "from": "46", "title": "333872.0 \n ID Transaccion: 140", "to": "17", "width": 1.1047162495744933}, {"color": "grey", "from": "46", "title": "509237.0 \n ID Transaccion: 163", "to": "7", "width": 1.1413841261108724}, {"color": "grey", "from": "46", "title": "2151665.0 \n ID Transaccion: 171", "to": "435", "width": 1.2665549862807923}, {"color": "grey", "from": "53", "title": "162026.0 \n ID Transaccion: 44", "to": "56", "width": 1.0419173117829081}, {"color": "grey", "from": "53", "title": "2736478.0 \n ID Transaccion: 85", "to": "160", "width": 1.2874384140918136}, {"color": "grey", "from": "53", "title": "2944098.0 \n ID Transaccion: 86", "to": "363", "width": 1.2937904768569095}, {"color": "grey", "from": "53", "title": "886874.0 \n ID Transaccion: 132", "to": "196", "width": 1.189572446721365}, {"color": "grey", "from": "53", "title": "591256.0 \n ID Transaccion: 188", "to": "285", "width": 1.1543552944461066}, {"color": "grey", "from": "56", "title": "519715.0 \n ID Transaccion: 147", "to": "22", "width": 1.1431532718441937}, {"color": "grey", "from": "56", "title": "131215.0 \n ID Transaccion: 194", "to": "175", "width": 1.0235973599462906}, {"color": "grey", "from": "64", "title": "484260.0 \n ID Transaccion: 142", "to": "406", "width": 1.1370159376707432}, {"color": "grey", "from": "65", "title": "2834251.0 \n ID Transaccion: 64", "to": "363", "width": 1.2904877062875424}, {"color": "red", "from": "65", "title": "577334.0 \n ID Transaccion: 98", "to": "295", "width": 1.1522856479881058}, {"color": "grey", "from": "65", "title": "227626.0 \n ID Transaccion: 120", "to": "74", "width": 1.0714449208706707}, {"color": "grey", "from": "62", "title": "224218.0 \n ID Transaccion: 73", "to": "188", "width": 1.0701344786394817}, {"color": "grey", "from": "62", "title": "3027222.0 \n ID Transaccion: 78", "to": "314", "width": 1.2962088946791481}, {"color": "grey", "from": "62", "title": "1329348.0 \n ID Transaccion: 127", "to": "335", "width": 1.2247278163106314}, {"color": "grey", "from": "62", "title": "29835.0 \n ID Transaccion: 133", "to": "404", "width": 0.8949484677097799}, {"color": "red", "from": "49", "title": "2265495.0 \n ID Transaccion: 80", "to": "499", "width": 1.2710326429778536}, {"color": "grey", "from": "49", "title": "903317.0 \n ID Transaccion: 81", "to": "31", "width": 1.191168118557983}, {"color": "grey", "from": "49", "title": "910000.0 \n ID Transaccion: 93", "to": "258", "width": 1.1918083944642204}, {"color": "grey", "from": "49", "title": "1531702.0 \n ID Transaccion: 94", "to": "206", "width": 1.2370349100969542}, {"color": "grey", "from": "49", "title": "655666.0 \n ID Transaccion: 95", "to": "77", "width": 1.163336680713614}, {"color": "grey", "from": "49", "title": "541972.0 \n ID Transaccion: 119", "to": "455", "width": 1.146795528581772}, {"color": "grey", "from": "49", "title": "444961.0 \n ID Transaccion: 141", "to": "12", "width": 1.1296646755885695}, {"color": "grey", "from": "49", "title": "466567.0 \n ID Transaccion: 150", "to": "210", "width": 1.1337830567225562}, {"color": "grey", "from": "49", "title": "102468.0 \n ID Transaccion: 155", "to": "285", "width": 1.0021188989652237}, {"color": "grey", "from": "49", "title": "1222088.0 \n ID Transaccion: 187", "to": "375", "width": 1.217420558218057}, {"color": "grey", "from": "68", "title": "981642.0 \n ID Transaccion: 87", "to": "437", "width": 1.1983907157283216}, {"color": "grey", "from": "39", "title": "635223.0 \n ID Transaccion: 105", "to": "233", "width": 1.1605853586298356}, {"color": "grey", "from": "39", "title": "574769.0 \n ID Transaccion: 154", "to": "175", "width": 1.151898887556773}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

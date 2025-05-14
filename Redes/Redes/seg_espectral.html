@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#1f77b4", "id": "ADRIAN KAUFFMANN CRUZ", "label": "ADRIAN KAUFFMANN CRUZ", "shape": "dot"}, {"color": "#1f77b4", "id": 2, "label": "2", "shape": "dot"}, {"color": "#8c564b", "id": "ALIRO GIOVANNY CARDENAS RICO", "label": "ALIRO GIOVANNY CARDENAS RICO", "shape": "dot"}, {"color": "#8c564b", "id": 5, "label": "5", "shape": "dot"}, {"color": "#1f77b4", "id": "ANDRES FELIPE HERNANDEZ SUAREZ", "label": "ANDRES FELIPE HERNANDEZ SUAREZ", "shape": "dot"}, {"color": "#1f77b4", "id": 8, "label": "8", "shape": "dot"}, {"color": "#1f77b4", "id": "ASESORIAS EMPRESARIALES Y CONSTRUCCIONES SAS", "label": "ASESORIAS EMPRESARIALES Y CONSTRUCCIONES SAS", "shape": "dot"}, {"color": "#17becf", "id": "CONSORCIO S\u0026S COFAC 029", "label": "CONSORCIO S\u0026S COFAC 029", "shape": "dot"}, {"color": "#17becf", "id": 19, "label": "19", "shape": "dot"}, {"color": "#17becf", "id": "CONSORCIO S\u0026S TOLEMAIDA", "label": "CONSORCIO S\u0026S TOLEMAIDA", "shape": "dot"}, {"color": "#17becf", "id": 20, "label": "20", "shape": "dot"}, {"color": "#8c564b", "id": "DAIRO RODRIGUEZ BONILLA", "label": "DAIRO RODRIGUEZ BONILLA", "shape": "dot"}, {"color": "#8c564b", "id": 23, "label": "23", "shape": "dot"}, {"color": "#1f77b4", "id": "FABIOLA AHUMADA JARAMILLO", "label": "FABIOLA AHUMADA JARAMILLO", "shape": "dot"}, {"color": "#1f77b4", "id": 29, "label": "29", "shape": "dot"}, {"color": "#8c564b", "id": "FREDY MAURICIO SANABRIA PINTO", "label": "FREDY MAURICIO SANABRIA PINTO", "shape": "dot"}, {"color": "#8c564b", "id": 30, "label": "30", "shape": "dot"}, {"color": "#1f77b4", "id": "INDUSTRIAS CARROCERIAS EL SOL S.A.S", "label": "INDUSTRIAS CARROCERIAS EL SOL S.A.S", "shape": "dot"}, {"color": "#1f77b4", "id": 32, "label": "32", "shape": "dot"}, {"color": "#17becf", "id": "INDUSTRIAS RIVMA SAS", "label": "INDUSTRIAS RIVMA SAS", "shape": "dot"}, {"color": "#17becf", "id": 33, "label": "33", "shape": "dot"}, {"color": "#1f77b4", "id": "JB \u0026 DD CONSTRUCCIONES SAS", "label": "JB \u0026 DD CONSTRUCCIONES SAS", "shape": "dot"}, {"color": "#1f77b4", "id": 45, "label": "45", "shape": "dot"}, {"color": "#8c564b", "id": "CONSORCIO ASO", "label": "CONSORCIO ASO", "shape": "dot"}, {"color": "#8c564b", "id": 37, "label": "37", "shape": "dot"}, {"color": "#17becf", "id": "CONSORCIO SS DIGSA FAC", "label": "CONSORCIO SS DIGSA FAC", "shape": "dot"}, {"color": "#8c564b", "id": "JESUS ORLANDO VIVAS NOGUERA", "label": "JESUS ORLANDO VIVAS NOGUERA", "shape": "dot"}, {"color": "#1f77b4", "id": "LUIS FELIPE MARTINEZ ARENA", "label": "LUIS FELIPE MARTINEZ ARENA", "shape": "dot"}, {"color": "#1f77b4", "id": "LUIS FELIPE MARTINEZ ARENAS", "label": "LUIS FELIPE MARTINEZ ARENAS", "shape": "dot"}, {"color": "#1f77b4", "id": "MARIA JOSE TARAZONA GELVEZ", "label": "MARIA JOSE TARAZONA GELVEZ", "shape": "dot"}, {"color": "#1f77b4", "id": 49, "label": "49", "shape": "dot"}, {"color": "#17becf", "id": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "label": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "shape": "dot"}, {"color": "#17becf", "id": 50, "label": "50", "shape": "dot"}, {"color": "#1f77b4", "id": "MARIO GERMAN GARCIA GARCIA", "label": "MARIO GERMAN GARCIA GARCIA", "shape": "dot"}, {"color": "#1f77b4", "id": 52, "label": "52", "shape": "dot"}, {"color": "#1f77b4", "id": "MARIO GERMAN GARC\u00cdA GARC\u00cdA", "label": "MARIO GERMAN GARC\u00cdA GARC\u00cdA", "shape": "dot"}, {"color": "#1f77b4", "id": 54, "label": "54", "shape": "dot"}, {"color": "#1f77b4", "id": "ETRAINING S.A.S.", "label": "ETRAINING S.A.S.", "shape": "dot"}, {"color": "#1f77b4", "id": "MARITZA PINZ\u00d3N CAMACHO", "label": "MARITZA PINZ\u00d3N CAMACHO", "shape": "dot"}, {"color": "#1f77b4", "id": "UNION TEMPORAL EISPRINGE", "label": "UNION TEMPORAL EISPRINGE", "shape": "dot"}, {"color": "#17becf", "id": "MARTIN HERNANDO BASTIDAS BURBANO", "label": "MARTIN HERNANDO BASTIDAS BURBANO", "shape": "dot"}, {"color": "#17becf", "id": 55, "label": "55", "shape": "dot"}, {"color": "#8c564b", "id": "OSCAR LEONEL BARRERA REYES", "label": "OSCAR LEONEL BARRERA REYES", "shape": "dot"}, {"color": "#8c564b", "id": 57, "label": "57", "shape": "dot"}, {"color": "#17becf", "id": "PEPITO TORRES", "label": "PEPITO TORRES", "shape": "dot"}, {"color": "#17becf", "id": 58, "label": "58", "shape": "dot"}, {"color": "#17becf", "id": "PGREFORESTACION", "label": "PGREFORESTACION", "shape": "dot"}, {"color": "#17becf", "id": 59, "label": "59", "shape": "dot"}, {"color": "#1f77b4", "id": "SANTIAGO GUZMAN", "label": "SANTIAGO GUZMAN", "shape": "dot"}, {"color": "#1f77b4", "id": 62, "label": "62", "shape": "dot"}, {"color": "#17becf", "id": "UNI\u00d3N TEMPORAL ACOMPA\u00d1AMIENTO PEDAG\u00d3GICO 2018", "label": "UNI\u00d3N TEMPORAL ACOMPA\u00d1AMIENTO PEDAG\u00d3GICO 2018", "shape": "dot"}, {"color": "#17becf", "id": 64, "label": "64", "shape": "dot"}, {"color": "#1f77b4", "id": "UT PROSERVIUS", "label": "UT PROSERVIUS", "shape": "dot"}, {"color": "#17becf", "id": "AMT F\u00dcR UMWELTSCHUTZ  STUTTGART", "label": "AMT F\u00dcR UMWELTSCHUTZ  STUTTGART", "shape": "dot"}, {"color": "#17becf", "id": 68, "label": "68", "shape": "dot"}, {"color": "#17becf", "id": "CAMALEON MULTIMEDIA SAS", "label": "CAMALEON MULTIMEDIA SAS", "shape": "dot"}, {"color": "#17becf", "id": "CONSORCIO OBP RES", "label": "CONSORCIO OBP RES", "shape": "dot"}, {"color": "#17becf", "id": "WILFRAN DIAZ LARA", "label": "WILFRAN DIAZ LARA", "shape": "dot"}, {"color": "#17becf", "id": "WILSON ALEJANDRO CRUZ TELLEZ", "label": "WILSON ALEJANDRO CRUZ TELLEZ", "shape": "dot"}, {"color": "#17becf", "id": 69, "label": "69", "shape": "dot"}, {"color": "#1f77b4", "id": 9999117, "label": "9999117", "shape": "dot"}, {"color": "#8c564b", "id": 9999155, "label": "9999155", "shape": "dot"}, {"color": "#8c564b", "id": 999989, "label": "999989", "shape": "dot"}, {"color": "#1f77b4", "id": 9999129, "label": "9999129", "shape": "dot"}, {"color": "#1f77b4", "id": 9999135, "label": "9999135", "shape": "dot"}, {"color": "#1f77b4", "id": 999947, "label": "999947", "shape": "dot"}, {"color": "#17becf", "id": 999943, "label": "999943", "shape": "dot"}, {"color": "#17becf", "id": 9999110, "label": "9999110", "shape": "dot"}, {"color": "#8c564b", "id": 999967, "label": "999967", "shape": "dot"}, {"color": "#8c564b", "id": 9999152, "label": "9999152", "shape": "dot"}, {"color": "#8c564b", "id": 999992, "label": "999992", "shape": "dot"}, {"color": "#1f77b4", "id": 999964, "label": "999964", "shape": "dot"}, {"color": "#17becf", "id": 9999188, "label": "9999188", "shape": "dot"}, {"color": "#1f77b4", "id": 999919, "label": "999919", "shape": "dot"}, {"color": "#8c564b", "id": 999921, "label": "999921", "shape": "dot"}, {"color": "#17becf", "id": 999965, "label": "999965", "shape": "dot"}, {"color": "#8c564b", "id": 9999102, "label": "9999102", "shape": "dot"}, {"color": "#8c564b", "id": 9999159, "label": "9999159", "shape": "dot"}, {"color": "#1f77b4", "id": 999951, "label": "999951", "shape": "dot"}, {"color": "#1f77b4", "id": 999995, "label": "999995", "shape": "dot"}, {"color": "#1f77b4", "id": 999911, "label": "999911", "shape": "dot"}, {"color": "#17becf", "id": 9999184, "label": "9999184", "shape": "dot"}, {"color": "#17becf", "id": 999923, "label": "999923", "shape": "dot"}, {"color": "#1f77b4", "id": 9999182, "label": "9999182", "shape": "dot"}, {"color": "#1f77b4", "id": 999975, "label": "999975", "shape": "dot"}, {"color": "#1f77b4", "id": 9999158, "label": "9999158", "shape": "dot"}, {"color": "#1f77b4", "id": 9999132, "label": "9999132", "shape": "dot"}, {"color": "#1f77b4", "id": 999924, "label": "999924", "shape": "dot"}, {"color": "#17becf", "id": 999933, "label": "999933", "shape": "dot"}, {"color": "#8c564b", "id": 9999107, "label": "9999107", "shape": "dot"}, {"color": "#8c564b", "id": 9999169, "label": "9999169", "shape": "dot"}, {"color": "#17becf", "id": 999941, "label": "999941", "shape": "dot"}, {"color": "#17becf", "id": 9999157, "label": "9999157", "shape": "dot"}, {"color": "#17becf", "id": 9999210, "label": "9999210", "shape": "dot"}, {"color": "#17becf", "id": 999962, "label": "999962", "shape": "dot"}, {"color": "#17becf", "id": 9999109, "label": "9999109", "shape": "dot"}, {"color": "#17becf", "id": 9999181, "label": "9999181", "shape": "dot"}, {"color": "#1f77b4", "id": "adrian_@outlook.com", "label": "adrian_@outlook.com", "shape": "dot"}, {"color": "#8c564b", "id": "aliro_g@outlook.com", "label": "aliro_g@outlook.com", "shape": "dot"}, {"color": "#8c564b", "id": "aliro_g@hotmail.com", "label": "aliro_g@hotmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "andres_@gmail.com", "label": "andres_@gmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "andres_@outlook.com", "label": "andres_@outlook.com", "shape": "dot"}, {"color": "#1f77b4", "id": "andres_@outlook.es", "label": "andres_@outlook.es", "shape": "dot"}, {"color": "#1f77b4", "id": "andres_@hotmail.com", "label": "andres_@hotmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "luis_fe@outlook.com", "label": "luis_fe@outlook.com", "shape": "dot"}, {"color": "#17becf", "id": "consorc@hotmail.com", "label": "consorc@hotmail.com", "shape": "dot"}, {"color": "#17becf", "id": "wilfran@hotmail.com", "label": "wilfran@hotmail.com", "shape": "dot"}, {"color": "#8c564b", "id": "dairo_r@outlook.es", "label": "dairo_r@outlook.es", "shape": "dot"}, {"color": "#1f77b4", "id": "fabiola@outlook.es", "label": "fabiola@outlook.es", "shape": "dot"}, {"color": "#8c564b", "id": "fredy_m@outlook.es", "label": "fredy_m@outlook.es", "shape": "dot"}, {"color": "#8c564b", "id": "fredy_m@yahoo.com", "label": "fredy_m@yahoo.com", "shape": "dot"}, {"color": "#17becf", "id": "industr@outlook.com", "label": "industr@outlook.com", "shape": "dot"}, {"color": "#8c564b", "id": "jesus_o@hotmail.com", "label": "jesus_o@hotmail.com", "shape": "dot"}, {"color": "#8c564b", "id": "jesus_o@outlook.com", "label": "jesus_o@outlook.com", "shape": "dot"}, {"color": "#1f77b4", "id": "luis_fe@gmail.com", "label": "luis_fe@gmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "luis_fe@yahoo.com", "label": "luis_fe@yahoo.com", "shape": "dot"}, {"color": "#1f77b4", "id": "maria_j@gmail.com", "label": "maria_j@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "maria_l@outlook.com", "label": "maria_l@outlook.com", "shape": "dot"}, {"color": "#17becf", "id": "maria_l@gmail.com", "label": "maria_l@gmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "mario_g@hotmail.com", "label": "mario_g@hotmail.com", "shape": "dot"}, {"color": "#1f77b4", "id": "mario_g@outlook.es", "label": "mario_g@outlook.es", "shape": "dot"}, {"color": "#1f77b4", "id": "mario_g@outlook.com", "label": "mario_g@outlook.com", "shape": "dot"}, {"color": "#1f77b4", "id": "etraini@outlook.com", "label": "etraini@outlook.com", "shape": "dot"}, {"color": "#1f77b4", "id": "maritza@outlook.com", "label": "maritza@outlook.com", "shape": "dot"}, {"color": "#1f77b4", "id": "maritza@outlook.es", "label": "maritza@outlook.es", "shape": "dot"}, {"color": "#1f77b4", "id": "union_t@gmail.com", "label": "union_t@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "martin_@gmail.com", "label": "martin_@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "martin_@hotmail.com", "label": "martin_@hotmail.com", "shape": "dot"}, {"color": "#8c564b", "id": "oscar_l@outlook.es", "label": "oscar_l@outlook.es", "shape": "dot"}, {"color": "#8c564b", "id": "oscar_l@yahoo.com", "label": "oscar_l@yahoo.com", "shape": "dot"}, {"color": "#8c564b", "id": "oscar_l@hotmail.com", "label": "oscar_l@hotmail.com", "shape": "dot"}, {"color": "#17becf", "id": "pepito_@gmail.com", "label": "pepito_@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "pgrefor@yahoo.com", "label": "pgrefor@yahoo.com", "shape": "dot"}, {"color": "#1f77b4", "id": "santiag@gmail.com", "label": "santiag@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "uni\u00f3n_t@outlook.es", "label": "uni\u00f3n_t@outlook.es", "shape": "dot"}, {"color": "#17becf", "id": "ut_pros@yahoo.com", "label": "ut_pros@yahoo.com", "shape": "dot"}, {"color": "#17becf", "id": "amt_f\u00fcr@outlook.com", "label": "amt_f\u00fcr@outlook.com", "shape": "dot"}, {"color": "#17becf", "id": "camaleo@gmail.com", "label": "camaleo@gmail.com", "shape": "dot"}, {"color": "#17becf", "id": "wilson_@outlook.com", "label": "wilson_@outlook.com", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "ADRIAN KAUFFMANN CRUZ", "to": 2}, {"from": "ADRIAN KAUFFMANN CRUZ", "to": 9999117}, {"from": "ADRIAN KAUFFMANN CRUZ", "to": "adrian_@outlook.com"}, {"from": "ALIRO GIOVANNY CARDENAS RICO", "to": 5}, {"from": "ALIRO GIOVANNY CARDENAS RICO", "to": 9999155}, {"from": "ALIRO GIOVANNY CARDENAS RICO", "to": 999989}, {"from": "ALIRO GIOVANNY CARDENAS RICO", "to": "aliro_g@outlook.com"}, {"from": "ALIRO GIOVANNY CARDENAS RICO", "to": "aliro_g@hotmail.com"}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": 8}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": 9999129}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": 9999135}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": 999947}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": "andres_@gmail.com"}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": "andres_@outlook.com"}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": "andres_@outlook.es"}, {"from": "ANDRES FELIPE HERNANDEZ SUAREZ", "to": "andres_@hotmail.com"}, {"from": 8, "to": "ASESORIAS EMPRESARIALES Y CONSTRUCCIONES SAS"}, {"from": 8, "to": "UT PROSERVIUS"}, {"from": "ASESORIAS EMPRESARIALES Y CONSTRUCCIONES SAS", "to": 9999129}, {"from": "ASESORIAS EMPRESARIALES Y CONSTRUCCIONES SAS", "to": "luis_fe@outlook.com"}, {"from": "CONSORCIO S\u0026S COFAC 029", "to": 19}, {"from": "CONSORCIO S\u0026S COFAC 029", "to": 999943}, {"from": "CONSORCIO S\u0026S COFAC 029", "to": "consorc@hotmail.com"}, {"from": "CONSORCIO S\u0026S TOLEMAIDA", "to": 20}, {"from": "CONSORCIO S\u0026S TOLEMAIDA", "to": 9999110}, {"from": "CONSORCIO S\u0026S TOLEMAIDA", "to": "wilfran@hotmail.com"}, {"from": "DAIRO RODRIGUEZ BONILLA", "to": 23}, {"from": "DAIRO RODRIGUEZ BONILLA", "to": 999967}, {"from": "DAIRO RODRIGUEZ BONILLA", "to": "dairo_r@outlook.es"}, {"from": "FABIOLA AHUMADA JARAMILLO", "to": 29}, {"from": "FABIOLA AHUMADA JARAMILLO", "to": 999947}, {"from": "FABIOLA AHUMADA JARAMILLO", "to": "fabiola@outlook.es"}, {"from": "FREDY MAURICIO SANABRIA PINTO", "to": 30}, {"from": "FREDY MAURICIO SANABRIA PINTO", "to": 9999152}, {"from": "FREDY MAURICIO SANABRIA PINTO", "to": 999992}, {"from": "FREDY MAURICIO SANABRIA PINTO", "to": "fredy_m@outlook.es"}, {"from": "FREDY MAURICIO SANABRIA PINTO", "to": "fredy_m@yahoo.com"}, {"from": "INDUSTRIAS CARROCERIAS EL SOL S.A.S", "to": 32}, {"from": "INDUSTRIAS CARROCERIAS EL SOL S.A.S", "to": 999964}, {"from": "INDUSTRIAS CARROCERIAS EL SOL S.A.S", "to": "luis_fe@outlook.com"}, {"from": "INDUSTRIAS RIVMA SAS", "to": 33}, {"from": "INDUSTRIAS RIVMA SAS", "to": 9999188}, {"from": "INDUSTRIAS RIVMA SAS", "to": "industr@outlook.com"}, {"from": "JB \u0026 DD CONSTRUCCIONES SAS", "to": 45}, {"from": "JB \u0026 DD CONSTRUCCIONES SAS", "to": 999919}, {"from": "JB \u0026 DD CONSTRUCCIONES SAS", "to": "luis_fe@outlook.com"}, {"from": 45, "to": "LUIS FELIPE MARTINEZ ARENA"}, {"from": 45, "to": "LUIS FELIPE MARTINEZ ARENAS"}, {"from": "CONSORCIO ASO", "to": 37}, {"from": "CONSORCIO ASO", "to": 999921}, {"from": "CONSORCIO ASO", "to": "fredy_m@yahoo.com"}, {"from": 37, "to": "CONSORCIO SS DIGSA FAC"}, {"from": 37, "to": "JESUS ORLANDO VIVAS NOGUERA"}, {"from": "CONSORCIO SS DIGSA FAC", "to": 999965}, {"from": "CONSORCIO SS DIGSA FAC", "to": "wilfran@hotmail.com"}, {"from": "JESUS ORLANDO VIVAS NOGUERA", "to": 9999102}, {"from": "JESUS ORLANDO VIVAS NOGUERA", "to": 9999159}, {"from": "JESUS ORLANDO VIVAS NOGUERA", "to": 999967}, {"from": "JESUS ORLANDO VIVAS NOGUERA", "to": "jesus_o@hotmail.com"}, {"from": "JESUS ORLANDO VIVAS NOGUERA", "to": "jesus_o@outlook.com"}, {"from": "LUIS FELIPE MARTINEZ ARENA", "to": 999951}, {"from": "LUIS FELIPE MARTINEZ ARENA", "to": "luis_fe@outlook.com"}, {"from": "LUIS FELIPE MARTINEZ ARENAS", "to": 9999117}, {"from": "LUIS FELIPE MARTINEZ ARENAS", "to": 999995}, {"from": "LUIS FELIPE MARTINEZ ARENAS", "to": "luis_fe@gmail.com"}, {"from": "LUIS FELIPE MARTINEZ ARENAS", "to": "luis_fe@yahoo.com"}, {"from": "MARIA JOSE TARAZONA GELVEZ", "to": 49}, {"from": "MARIA JOSE TARAZONA GELVEZ", "to": 999911}, {"from": "MARIA JOSE TARAZONA GELVEZ", "to": "maria_j@gmail.com"}, {"from": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "to": 50}, {"from": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "to": 9999184}, {"from": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "to": 999923}, {"from": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "to": "maria_l@outlook.com"}, {"from": "MARIA LEIDER VELASQUEZ MU\u00d1OZ", "to": "maria_l@gmail.com"}, {"from": "MARIO GERMAN GARCIA GARCIA", "to": 52}, {"from": "MARIO GERMAN GARCIA GARCIA", "to": 9999182}, {"from": "MARIO GERMAN GARCIA GARCIA", "to": 999975}, {"from": "MARIO GERMAN GARCIA GARCIA", "to": "mario_g@hotmail.com"}, {"from": "MARIO GERMAN GARCIA GARCIA", "to": "mario_g@outlook.es"}, {"from": "MARIO GERMAN GARC\u00cdA GARC\u00cdA", "to": 54}, {"from": "MARIO GERMAN GARC\u00cdA GARC\u00cdA", "to": 9999158}, {"from": "MARIO GERMAN GARC\u00cdA GARC\u00cdA", "to": "mario_g@outlook.com"}, {"from": 54, "to": "ETRAINING S.A.S."}, {"from": 54, "to": "MARITZA PINZ\u00d3N CAMACHO"}, {"from": 54, "to": "UNION TEMPORAL EISPRINGE"}, {"from": "ETRAINING S.A.S.", "to": 9999188}, {"from": "ETRAINING S.A.S.", "to": "etraini@outlook.com"}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": 999911}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": 9999132}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": 999924}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": "maritza@outlook.com"}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": "luis_fe@outlook.com"}, {"from": "MARITZA PINZ\u00d3N CAMACHO", "to": "maritza@outlook.es"}, {"from": "UNION TEMPORAL EISPRINGE", "to": 999975}, {"from": "UNION TEMPORAL EISPRINGE", "to": "union_t@gmail.com"}, {"from": "MARTIN HERNANDO BASTIDAS BURBANO", "to": 55}, {"from": "MARTIN HERNANDO BASTIDAS BURBANO", "to": 999933}, {"from": "MARTIN HERNANDO BASTIDAS BURBANO", "to": 999965}, {"from": "MARTIN HERNANDO BASTIDAS BURBANO", "to": "martin_@gmail.com"}, {"from": "MARTIN HERNANDO BASTIDAS BURBANO", "to": "martin_@hotmail.com"}, {"from": "OSCAR LEONEL BARRERA REYES", "to": 57}, {"from": "OSCAR LEONEL BARRERA REYES", "to": 9999107}, {"from": "OSCAR LEONEL BARRERA REYES", "to": 9999155}, {"from": "OSCAR LEONEL BARRERA REYES", "to": 9999169}, {"from": "OSCAR LEONEL BARRERA REYES", "to": 999921}, {"from": "OSCAR LEONEL BARRERA REYES", "to": "oscar_l@outlook.es"}, {"from": "OSCAR LEONEL BARRERA REYES", "to": "oscar_l@yahoo.com"}, {"from": "OSCAR LEONEL BARRERA REYES", "to": "oscar_l@hotmail.com"}, {"from": "PEPITO TORRES", "to": 58}, {"from": "PEPITO TORRES", "to": 999941}, {"from": "PEPITO TORRES", "to": "pepito_@gmail.com"}, {"from": "PGREFORESTACION", "to": 59}, {"from": "PGREFORESTACION", "to": 9999188}, {"from": "PGREFORESTACION", "to": "pgrefor@yahoo.com"}, {"from": "SANTIAGO GUZMAN", "to": 62}, {"from": "SANTIAGO GUZMAN", "to": 999947}, {"from": "SANTIAGO GUZMAN", "to": "santiag@gmail.com"}, {"from": "UNI\u00d3N TEMPORAL ACOMPA\u00d1AMIENTO PEDAG\u00d3GICO 2018", "to": 64}, {"from": "UNI\u00d3N TEMPORAL ACOMPA\u00d1AMIENTO PEDAG\u00d3GICO 2018", "to": 999941}, {"from": "UNI\u00d3N TEMPORAL ACOMPA\u00d1AMIENTO PEDAG\u00d3GICO 2018", "to": "uni\u00f3n_t@outlook.es"}, {"from": "UT PROSERVIUS", "to": 9999188}, {"from": "UT PROSERVIUS", "to": "ut_pros@yahoo.com"}, {"from": "AMT F\u00dcR UMWELTSCHUTZ  STUTTGART", "to": 68}, {"from": "AMT F\u00dcR UMWELTSCHUTZ  STUTTGART", "to": 9999157}, {"from": "AMT F\u00dcR UMWELTSCHUTZ  STUTTGART", "to": "amt_f\u00fcr@outlook.com"}, {"from": 68, "to": "CAMALEON MULTIMEDIA SAS"}, {"from": 68, "to": "CONSORCIO OBP RES"}, {"from": 68, "to": "WILFRAN DIAZ LARA"}, {"from": "CAMALEON MULTIMEDIA SAS", "to": 9999210}, {"from": "CAMALEON MULTIMEDIA SAS", "to": "camaleo@gmail.com"}, {"from": "CONSORCIO OBP RES", "to": 999962}, {"from": "CONSORCIO OBP RES", "to": "consorc@hotmail.com"}, {"from": "WILFRAN DIAZ LARA", "to": 9999109}, {"from": "WILFRAN DIAZ LARA", "to": 9999188}, {"from": "WILFRAN DIAZ LARA", "to": 999941}, {"from": "WILFRAN DIAZ LARA", "to": "wilfran@hotmail.com"}, {"from": "WILSON ALEJANDRO CRUZ TELLEZ", "to": 69}, {"from": "WILSON ALEJANDRO CRUZ TELLEZ", "to": 9999181}, {"from": "WILSON ALEJANDRO CRUZ TELLEZ", "to": 999923}, {"from": "WILSON ALEJANDRO CRUZ TELLEZ", "to": "ut_pros@yahoo.com"}, {"from": "WILSON ALEJANDRO CRUZ TELLEZ", "to": "wilson_@outlook.com"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
